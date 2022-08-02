@@ -19,22 +19,21 @@ func NewAuthorsStorage(db *sql.DB) *AuthorsStorage {
 
 }
 
-func (m *AuthorsStorage) CreateNewAuthor(author *models.Authors) (int64, error) {
+func (m *AuthorsStorage) CreateNewAuthor(author *models.Authors) (*models.Authors, error) {
 
-	stmt := `INSERT INTO dclib_test.authors (author_name, author_surname, author_patrynomic) VALUES(?, ?, ?)`
+	stmt := `INSERT INTO dclib_test.authors (author_name, author_surname, author_patrynomic, author_photo) VALUES(?, ?, ?, ?)`
 
-	result, err := m.DB.Exec(stmt, author.AuthorName.Name, author.AuthorName.Surname, author.AuthorName.Patronymic)
+	result, err := m.DB.Exec(stmt, author.AuthorName.Name, author.AuthorName.Surname, author.AuthorName.Patronymic, author.AuthorPhoto)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	id, err := result.LastInsertId()
+	_, err = result.LastInsertId()
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
-	fmt.Printf("---> Author %v has been added to DB", id)
 
-	return id, nil
+	return author, nil
 }
 
 func (m *AuthorsStorage) GetAuthorsList() ([]*models.Authors, error) {
@@ -198,19 +197,4 @@ func (m *AuthorsStorage) AuthorsBooksConnection(author *models.Authors) (*models
 		fmt.Printf("Id %v has beed added to DB.", id)
 	}
 	return author, nil
-}
-
-func (m *AuthorsStorage) DeleteAuthorById(id int64) (int64, error) {
-	stmt := `DELETE FROM dclib_test.authors WHERE author_id = ?`
-
-	deleted, err := m.DB.Exec(stmt, id)
-	if err != nil {
-		return 0, err
-	}
-
-	res, err := deleted.LastInsertId()
-	if err != nil {
-		return 0, err
-	}
-	return res, nil
 }

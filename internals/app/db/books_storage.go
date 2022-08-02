@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 
 	"github.com/wertick01/dclib/internals/app/models"
@@ -31,22 +30,17 @@ func (m *BooksStorage) CreateNewBook(book *models.Books) (*models.Books, error) 
 	if err != nil {
 		return m.NullBooks(), err
 	}
-	fmt.Printf("---> Book %v has been added to DB", id)
 
 	connected, err := m.BooksAuthorsConnection(id, book)
 	if err != nil {
 		return m.NullBooks(), err
 	}
 
-	fmt.Printf("---> Book %v has been added to DB", id)
-
 	return connected, nil
 }
 
 func (m *BooksStorage) BooksAuthorsConnection(id int64, books *models.Books) (*models.Books, error) {
 	stmt := `INSERT INTO dclib_test.books_authors (book_id, author_id) VALUES(?, ?)`
-	//sdmd := `SELECT book_id FROM dclib_test.books WHERE book_name = ?`
-	//res := m.DB.QueryRow(sdmd, )
 
 	authors := books.Authors
 	for _, val := range authors {
@@ -54,19 +48,17 @@ func (m *BooksStorage) BooksAuthorsConnection(id int64, books *models.Books) (*m
 		if err != nil {
 			return m.NullBooks(), err
 		}
-		id, err := row.LastInsertId()
+		_, err = row.LastInsertId()
 		if err != nil {
 			return m.NullBooks(), err
 		}
-		fmt.Printf("Id %v has beed added to DB.", id)
 	}
 	return books, nil
 }
 
-/*
 func (m *BooksStorage) GetBooksList() ([]*models.Books, error) {
-	stmt := `SELECT  ba.book_id,  b.book_name,  b.book_count, b.book_photo, ba.author_id,  a.author_name, a.author_surname, a.author_patrynomic, a.author_photo
-	FROM dclib_test.books_authors AS ba INNER JOIN dclib_test.books AS b USING(book_id) INNER JOIN dclib_test.authors AS a USING(author_id)`
+
+	stmt := `SELECT ba.book_id, b.book_name, b.book_count, b.book_photo, ba.author_id, a.author_name, a.author_surname, a.author_patrynomic, a.author_photo FROM books_authors AS ba LEFT JOIN authors AS a ON ba.author_id=a.author_id RIGHT JOIN books AS b ON ba.book_id=b.book_id`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -75,156 +67,78 @@ func (m *BooksStorage) GetBooksList() ([]*models.Books, error) {
 
 	defer rows.Close()
 
-	var allbooks map[int]*models.Books
-
-	var a_id int64 = 0
+	var bookmap []*models.Books
 
 	for rows.Next() {
 		s := &models.Books{}
-		a := models.Authors{}
-		err = rows.Scan(&s.BookId,
-			&s.BookName,
-			&s.Count,
-			&s.BookPhoto,
-
-			&a.AuthorId,
-			&a.AuthorName.Name,
-			&a.AuthorName.Surname,
-			&a.AuthorName.Patronymic,
-			&a.AuthorPhoto,
-		)
+		a := &models.Authors{}
+		err = rows.Scan(&s.BookId, &s.BookName, &s.Count, &s.BookPhoto, &a.AuthorId, &a.AuthorName.Name, &a.AuthorName.Surname, &a.AuthorName.Patronymic, &a.AuthorPhoto)
 		if err != nil {
-			return nil, err
+			return nil, models.ErrNoRecord
 		}
 
-		if a.AuthorId != a_id {
-			s.Authors = append(s.Authors, a)
-		}
-		a_id = a.AuthorId
+		s.Authors = append(s.Authors, *a)
+		bookmap = append(bookmap, s)
+
 	}
 
-}
-*/
+	var a, b_id int64 = 0, 0
+	var book *models.Books
+	var books []*models.Books
 
-func (m *BooksStorage) GetBooksList() ([]*models.Books, error) {
+	for _, val := range bookmap {
 
-	stmt := `SELECT book_id, book_name, book_count FROM dclib_test.books`
-	skmk := `SELECT author_id FROM dclib_test.books_authors WHERE book_id = ?`
-	sdmd := `SELECT author_name, author_surname, author_patrynomic FROM dclib_test.authors WHERE author_id = ?`
-
-	rows, err := m.DB.Query(stmt)
-	if err != nil {
-		return nil, err
+		if val.BookId == b_id {
+			book.Authors = append(book.Authors, val.Authors[0])
+			a--
+			books = remove(books, a)
+		} else {
+			book = val
+			b_id = val.BookId
+		}
+		a++
+		books = append(books, book)
 	}
 
-	defer rows.Close()
-
-	var allbooks []*models.Books
-
-	for rows.Next() {
-		var a_id []int64
-		var id int64
-		s := &models.Books{}
-		err = rows.Scan(&s.BookId, &s.BookName, &s.Count)
-		if err != nil {
-			return nil, err
-		}
-
-		connection, err := m.DB.Query(skmk, s.BookId)
-		if err != nil {
-			return nil, err
-		}
-
-		defer connection.Close()
-
-		for connection.Next() {
-			err = connection.Scan(&id)
-			if err != nil {
-				return nil, err
-			}
-
-			a_id = append(a_id, id)
-		}
-
-		for _, val := range a_id {
-			a := &models.Authors{}
-			a.AuthorId = val
-			authors := m.DB.QueryRow(sdmd, val)
-
-			err = authors.Scan(
-				&a.AuthorName.Name,
-				&a.AuthorName.Surname,
-				&a.AuthorName.Patronymic,
-			)
-
-			if err != nil {
-				return nil, err
-			}
-			s.Authors = append(s.Authors, *a)
-		}
-
-		allbooks = append(allbooks, s)
-	}
-
-	return allbooks, nil
+	return books, nil
 }
 
 func (m *BooksStorage) GetBookById(id int64) (*models.Books, error) {
 
-	stmt := `SELECT book_id, book_name, book_count FROM dclib_test.books WHERE book_id = ?`
-	skmk := `SELECT author_id FROM dclib_test.books_authors WHERE book_id = ?`
-	sdmd := `SELECT author_name, author_surname, author_patrynomic FROM dclib_test.authors WHERE author_id = ?`
+	stmt := `SELECT ba.book_id, b.book_name, b.book_count, b.book_photo, ba.author_id, a.author_name, a.author_surname, a.author_patrynomic, a.author_photo FROM books_authors AS ba LEFT JOIN authors AS a ON ba.author_id=a.author_id RIGHT JOIN books AS b ON ba.book_id=b.book_id WHERE ba.book_id=?`
 
-	row := m.DB.QueryRow(stmt, id)
-
-	s := &models.Books{}
-
-	var a_id []int64
-	var id_ int64
-
-	err := row.Scan(&s.BookId, &s.BookName, &s.Count)
+	rows, err := m.DB.Query(stmt, id)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return m.NullBooks(), models.ErrNoRecord
-		} else {
-			return m.NullBooks(), err
-		}
+		return nil, models.ErrNoRecord
 	}
 
-	connection, err := m.DB.Query(skmk, s.BookId)
-	if err != nil {
-		return m.NullBooks(), err
-	}
+	defer rows.Close()
 
-	defer connection.Close()
+	var bookmap []*models.Books
+	var bookres = new(models.Books)
+	var b int = 0
 
-	for connection.Next() {
-		err = connection.Scan(&id_)
-		if err != nil {
-			return m.NullBooks(), err
-		}
-
-		a_id = append(a_id, id_)
-	}
-
-	for _, val := range a_id {
+	for rows.Next() {
+		s := &models.Books{}
 		a := &models.Authors{}
-		a.AuthorId = val
-		authors := m.DB.QueryRow(sdmd, val)
-
-		err = authors.Scan(
-			&a.AuthorName.Name,
-			&a.AuthorName.Surname,
-			&a.AuthorName.Patronymic,
-		)
-
+		err = rows.Scan(&s.BookId, &s.BookName, &s.Count, &s.BookPhoto, &a.AuthorId, &a.AuthorName.Name, &a.AuthorName.Surname, &a.AuthorName.Patronymic, &a.AuthorPhoto)
 		if err != nil {
-			return m.NullBooks(), err
+			return nil, err
 		}
 		s.Authors = append(s.Authors, *a)
+		bookmap = append(bookmap, s)
+		bookres.Authors = append(bookres.Authors, *a)
+		if b == 0 {
+			bookres.BookId = s.BookId
+			bookres.BookName = s.BookName
+			bookres.Count = s.Count
+			bookres.BookPhoto = s.BookPhoto
+			bookres.Stars = s.Stars
+		}
+		b++
 	}
 
-	return s, nil
+	return bookres, nil
 }
 
 func (m *BooksStorage) ChangeBook(old *models.Books) (*models.Books, error) { //доделать с учётом нескольких авторов
@@ -272,6 +186,16 @@ func (m *BooksStorage) DeleteBookById(id int64) (int64, error) {
 	stmt := `DELETE FROM dclib_test.books WHERE book_id = ?`
 	sdmd := `DELETE FROM dclib_test.books_authors WHERE book_id = ?`
 
+	delet, err := m.DB.Exec(sdmd, id)
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := delet.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
 	deleted, err := m.DB.Exec(stmt, id)
 	if err != nil {
 		return 0, err
@@ -282,16 +206,63 @@ func (m *BooksStorage) DeleteBookById(id int64) (int64, error) {
 		return 0, err
 	}
 
-	delet, err := m.DB.Exec(sdmd, id)
+	auth, err := m.GetBooksByAuthorId(id)
 	if err != nil {
 		return 0, err
 	}
 
-	result, err := delet.LastInsertId()
+	if len(auth) < 1 {
+		_, err := m.DeleteAuthorById(id)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	fmt.Printf("Book %v has been deleted", result)
+	return res, nil
+}
+
+func (m *BooksStorage) GetBooksByAuthorId(id int64) ([]*models.Books, error) {
+	stmt := `SELECT book_id FROM dclib_test.books_authors WHERE author_id = ?`
+
+	rows, err := m.DB.Query(stmt, id)
+	if err != nil {
+		return nil, err
+	}
+	var book_id int64
+	var books []*models.Books
+
+	for rows.Next() {
+		err = rows.Scan(&book_id)
+		book, err := m.GetBookById(book_id)
+		if err != nil {
+			return nil, err
+		}
+		books = append(books, book)
+	}
+
+	return books, nil
+}
+
+func (m *BooksStorage) DeleteAuthorById(id int64) (int64, error) {
+	stmt := `DELETE FROM dclib_test.authors WHERE author_id = ?`
+	sdmd := `DELETE FROM dclib_test.books_authors WHERE author_id = ?`
+
+	_, err := m.DB.Exec(sdmd, id)
 	if err != nil {
 		return 0, err
 	}
-	fmt.Printf("Book %v has been deleted", result)
+
+	deleted, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return 0, err
+	}
+
+	res, err := deleted.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
 	return res, nil
 }
 
@@ -317,4 +288,8 @@ func (m *BooksStorage) PutStarByBookId(id int64) error { //!!!
 	}
 
 	return nil
+}
+
+func remove(slice []*models.Books, s int64) []*models.Books {
+	return append(slice[:s], slice[s+1:]...)
 }

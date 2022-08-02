@@ -7,7 +7,7 @@ CREATE TABLE authors (
     author_name VARCHAR(100) NOT NULL, 
     author_surname VARCHAR(100) NOT NULL, 
     author_patrynomic VARCHAR(100), 
-    author_photo VARCHAR(100), 
+    author_photo VARCHAR(100) NOT NULL, 
     PRIMARY KEY(author_id)
 );
 
@@ -15,7 +15,7 @@ CREATE TABLE books (
     book_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     book_name VARCHAR(100) NOT NULL, 
     book_count INTEGER, 
-    book_photo VARCHAR(100)
+    book_photo VARCHAR(100) NOT NULL
     );
 
 CREATE TABLE books_authors (
@@ -67,27 +67,27 @@ CREATE TABLE booking (
      FOREIGN KEY(userid) REFERENCES users(userid)
     );
 
-INSERT INTO authors (author_name, author_surname, author_patrynomic) VALUES
-    ('Lev', 'Tolstoy', 'Nickolaevich'),
-    ('Steven', 'King', 'Edwid'),
-    ('Adolph', 'Hitler', 'Alaizovich'),    
-    ('Mikhail', 'Lermontov', 'Jurievich'),    
-    ('Nikolay', 'Hohol', 'Vasilevich'),    
-    ('Fedor', 'Dostoevsky', 'Mikhailovich'),    
-    ('Ray', 'Bradbury', 'Douglas'),    
-    ('Vladimir', 'Lenin', 'Ilich');
+INSERT INTO authors (author_name, author_surname, author_patrynomic, author_photo) VALUES
+    ('Lev', 'Tolstoy', 'Nickolaevich', ''),
+    ('Steven', 'King', 'Edwid', ''),
+    ('Adolph', 'Hitler', 'Alaizovich', ''),    
+    ('Mikhail', 'Lermontov', 'Jurievich', ''),    
+    ('Nikolay', 'Hohol', 'Vasilevich', ''),    
+    ('Fedor', 'Dostoevsky', 'Mikhailovich', ''),    
+    ('Ray', 'Bradbury', 'Douglas', ''),    
+    ('Vladimir', 'Lenin', 'Ilich', '');
 
-INSERT INTO books (book_name, book_count) VALUES
-    ('War and peace', 1),
-    ('It', 2),
-    ('Something', 1),    
-    ('Mein Kamph', 1488),    
-    ('Hero of our time', 1),    
-    ('Taras Bulba', 2),    
-    ('Died souls', 3),    
-    ('Crime and punishment', 1),    
-    ('Dandelion wine', 2),    
-    ('The State and the Revolution', 5);
+INSERT INTO books (book_name, book_count, book_photo) VALUES
+    ('War and peace', 1, ''),
+    ('It', 2, ''),
+    ('Something', 1, ''),    
+    ('Mein Kamph', 1488, ''),    
+    ('Hero of our time', 1, ''),    
+    ('Taras Bulba', 2, ''),    
+    ('Died souls', 3, ''),    
+    ('Crime and punishment', 1, ''),    
+    ('Dandelion wine', 2, ''),    
+    ('The State and the Revolution', 5, '');
 
 INSERT INTO books_authors (book_id, author_id) VALUES
     (1, 1),
@@ -100,6 +100,10 @@ INSERT INTO books_authors (book_id, author_id) VALUES
     (8, 6),    
     (9, 7),    
     (10, 8);
+
+INSERT INTO roles (role_id, user_role) VALUES 
+    (1, 'admin'), 
+    (2, 'user');
 
 SELECT 
 ba.book_id, 

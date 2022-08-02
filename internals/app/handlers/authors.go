@@ -37,7 +37,7 @@ func (handler *AuthorsHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = handler.processor.CreateAuthor(newAuthor)
+	author, err := handler.processor.CreateAuthor(newAuthor)
 	if err != nil {
 		WrapError(w, err)
 		return
@@ -45,7 +45,7 @@ func (handler *AuthorsHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	var m = map[string]interface{}{
 		"result": "OK",
-		"data":   newAuthor,
+		"data":   author,
 	}
 
 	WrapOK(w, m)

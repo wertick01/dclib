@@ -120,6 +120,29 @@ func (handler *UsersHandler) Find(w http.ResponseWriter, r *http.Request) {
 	WrapOK(w, m)
 }
 
+func (handler *UsersHandler) FindByPhone(w http.ResponseWriter, r *http.Request) {
+	var wantedUser *models.User
+
+	err := json.NewDecoder(r.Body).Decode(&wantedUser)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	user, err := handler.processor.FindByPhone(wantedUser.Phone)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	var m = map[string]interface{}{
+		"result": "OK",
+		"data":   user,
+	}
+
+	WrapOK(w, m)
+}
+
 func (handler *UsersHandler) Change(w http.ResponseWriter, r *http.Request) {
 	var changeUser *models.User
 

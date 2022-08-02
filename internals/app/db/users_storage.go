@@ -6,10 +6,6 @@ import (
 
 	"github.com/wertick01/dclib/internals/app/models"
 
-	//"github.com/georgysavva/scany/pgxscan"
-	//"github.com/jackc/pgx/v4/pgxpool"
-	//log "github.com/sirupsen/logrus"
-
 	"database/sql"
 )
 
@@ -41,9 +37,8 @@ func (m *UsersStorage) CreateNewUser(user *models.User) (*models.User, error) {
 		user.Phone,
 		user.Mail,
 		user.Hash,
-		1,
+		user.Role.RoleId,
 	)
-
 	if err != nil {
 		return nil, err
 	}
