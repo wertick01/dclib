@@ -28,7 +28,7 @@ func LoadAndStoreConfig() Cfg {
 	v.SetDefault("DBPASS", "password_")
 	v.SetDefault("DBPARSETIME", "parseTime=True")
 	v.SetDefault("DBHOST", "")
-	v.SetDefault("DBPORT", "5000")
+	v.SetDefault("DBPORT", "3306")
 	v.SetDefault("DBNAME", "dclib_test")
 	v.AutomaticEnv() //собираем наши переменные с системных
 
