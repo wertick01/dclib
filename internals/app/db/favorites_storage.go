@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/wertick01/dclib/internals/app/models"
 )
@@ -29,7 +28,6 @@ func (m *FavorietesStorage) AddToFavorieteBooks(favorietes *models.FavorieteBook
 	if err != nil {
 		return 0, err
 	}
-	fmt.Printf("---> book %v has been added to Favorietes", id)
 
 	return id, nil
 }
@@ -46,7 +44,6 @@ func (m *FavorietesStorage) AddToFavorieteAuthors(favorietes *models.FavorieteAu
 	if err != nil {
 		return 0, err
 	}
-	fmt.Printf("---> Author %v has been added to Favorietes\n", id)
 
 	return id, nil
 }

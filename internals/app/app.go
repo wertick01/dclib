@@ -74,6 +74,7 @@ func (server *AppServer) Serve() {
 	routes.Use(middleware.RequestLog) //middleware используем здесь, хотя можно было бы и в CreateRoutes
 
 	server.srv = &http.Server{ //в отличие от примеров http, здесь мы передаем наш server в поле структуры, для работы в Shutdown
+		//Addr: ":8080",
 		Addr:     ":" + server.config.Port,
 		Handler:  routes,
 		ErrorLog: errorLog,

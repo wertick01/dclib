@@ -25,7 +25,7 @@ func main() {
 
 	go func() { //горутина для ловли сообщений системы
 		oscall := <-c //если таки что то пришло
-		log.Printf("system call:%+v", oscall)
+		log.Printf("system call:%+v\n", oscall)
 		server.Shutdown() //выключаем сервер
 		cancel()          //отменяем контекст
 	}()

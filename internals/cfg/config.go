@@ -36,5 +36,5 @@ func GetConfig() (*Cfg, error) {
 
 func (cfg *Cfg) GetDBString() string { //маленький метод для сборки строки соединения с БД
 	//return "dclib_user:password_@tcp(localhost:3306)/dclib_test?parseTime=True"
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", cfg.DbUser, cfg.DbPass, cfg.DbHost, cfg.DbPort, cfg.DbName)
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", cfg.DbUser, cfg.DbPass, cfg.DbHost, cfg.DbPort, cfg.DbName)
 }

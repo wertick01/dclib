@@ -1,4 +1,3 @@
-/*CREATE DATABASE dclib_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;*/
 USE dclib_test;
 
 
@@ -103,4 +102,3 @@ INSERT INTO books_authors (book_id, author_id) VALUES
 INSERT INTO roles (role_id, user_role) VALUES 
     (1, 'admin'), 
     (2, 'user');
-
