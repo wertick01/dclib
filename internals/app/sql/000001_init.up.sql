@@ -1,5 +1,3 @@
-USE dclib_test;
-
 
 CREATE TABLE authors (
     author_id INTEGER NOT NULL AUTO_INCREMENT, 
