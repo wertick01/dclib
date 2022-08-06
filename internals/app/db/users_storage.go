@@ -2,7 +2,6 @@ package db
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/wertick01/dclib/internals/app/models"
 
@@ -135,11 +134,10 @@ func (m *UsersStorage) ChangeUser(old *models.User) (*models.User, error) {
 		return nil, err
 	}
 
-	id, err := change.LastInsertId()
+	_, err = change.LastInsertId()
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("User %v has been changed.", id)
 
 	return old, nil
 }

@@ -7,12 +7,11 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
-type Cfg struct { //наша структура для хранения конфигов, я полагаюсь на Viper для матчинга имен
+type Cfg struct {
 	Port   string `env:"PORT"`
 	DbName string `env:"DBNAME"`
 	DbUser string `env:"DBUSER"`
 	DbPass string `env:"DBPASS"`
-	//DBParseTime string `env-default:"parsetime=True"`
 	DbHost string `env:"DBHOST"`
 	DbPort string `env:"DBPORT"`
 }
@@ -34,7 +33,7 @@ func GetConfig() (*Cfg, error) {
 	return configInstance, configErr
 }
 
-func (cfg *Cfg) GetDBString() string { //маленький метод для сборки строки соединения с БД
+func (cfg *Cfg) GetDBString() string {
 	//return "dclib_user:password_@tcp(localhost:3306)/dclib_test?parseTime=True"
 	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", cfg.DbUser, cfg.DbPass, cfg.DbHost, cfg.DbPort, cfg.DbName)
 }

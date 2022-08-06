@@ -21,8 +21,9 @@ func CreateRoutes(
 	r.HandleFunc("/api/registration", usersHandler.Create).Methods("POST")
 
 	r.HandleFunc("/api/users", usersHandler.List).Methods("GET")
+	r.HandleFunc("/api/users", usersHandler.Change).Methods("PUT")
+	r.HandleFunc("/api/users/phone", usersHandler.FindByPhone).Methods("POST")
 	r.HandleFunc("/api/users/{id:[0-9]+}", usersHandler.Find).Methods("GET")
-	r.HandleFunc("/api/users/{id:[0-9]+}", usersHandler.Change).Methods("PUT")
 	r.HandleFunc("/api/users/{id:[0-9]+}", usersHandler.Delete).Methods("DELETE")
 	//r.HandleFunc("/api/send-code").Methods("POST")
 	//r.HandleFunc("/api/refresh-token").Methods("POST")
@@ -33,16 +34,16 @@ func CreateRoutes(
 
 	r.HandleFunc("/api/book", booksHandler.Create).Methods("POST")
 	r.HandleFunc("/api/book", booksHandler.List).Methods("GET")
+	r.HandleFunc("/api/book", booksHandler.Change).Methods("PUT")
 	r.HandleFunc("/api/book/{id:[0-9]+}", booksHandler.Find).Methods("GET")
-	r.HandleFunc("/api/book/{id:[0-9]+}", booksHandler.Star).Methods("POST")
-	r.HandleFunc("/api/book/{id:[0-9]+}", booksHandler.Change).Methods("PUT")
+	//r.HandleFunc("/api/book/{id:[0-9]+}", booksHandler.Star).Methods("POST")
 	r.HandleFunc("/api/book/{id:[0-9]+}", booksHandler.Delete).Methods("DELETE")
 
 	r.HandleFunc("/api/authors", authorsHandler.List).Methods("GET")
 	r.HandleFunc("/api/authors", authorsHandler.Create).Methods("POST")
+	r.HandleFunc("/api/authors", authorsHandler.Change).Methods("PUT")
 	r.HandleFunc("/api/authors/{id:[0-9]+}", authorsHandler.Find).Methods("GET")
-	r.HandleFunc("/api/authors/{id:[0-9]+}", authorsHandler.Change).Methods("PUT")
-	r.HandleFunc("/api/authors/{id:[0-9]+}", authorsHandler.Star).Methods("POST")
+	//r.HandleFunc("/api/authors/{id:[0-9]+}", authorsHandler.Star).Methods("POST")
 	r.HandleFunc("/api/authors/{id:[0-9]+}", authorsHandler.Delete).Methods("DELETE")
 	r.HandleFunc("/api/authors/books/{id:[0-9]+}", authorsHandler.FindBooks).Methods("GET")
 

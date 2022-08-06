@@ -2,7 +2,6 @@ package processors
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/wertick01/dclib/internals/app/db"
 	"github.com/wertick01/dclib/internals/app/models"
@@ -31,7 +30,6 @@ func (processor *FavorietesProcessor) DeleteFromFavorieteBooks(favoriete *models
 	if err != nil {
 		return 0, errors.New("CANNOT DELETE BOOK")
 	}
-	fmt.Printf("Book %v has been deleted from favorietes.", deleted)
 	return deleted, nil
 }
 
@@ -48,6 +46,5 @@ func (processor *FavorietesProcessor) DeleteFromFavorieteAuthors(favoriete *mode
 	if err != nil {
 		return 0, errors.New("CANNOT DELETE THE AUTHOR")
 	}
-	fmt.Printf("Author %v has been deleted from favorietes.", deleted)
 	return deleted, nil
 }

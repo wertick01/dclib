@@ -143,7 +143,7 @@ func (m *AuthorsStorage) GetBooksByAuthorId(id int64) ([]*models.Books, *models.
 	return books, author, nil
 }
 
-func (m *AuthorsStorage) PutStarByAuthorId(id int64) error { //!!!
+func (m *AuthorsStorage) PutStarByAuthorId(id int64, method string) error { //!!!
 
 	stmt := `UPDATE dclib_test.authors SET author_stars = ? WHERE author_id = ?`
 
@@ -152,7 +152,12 @@ func (m *AuthorsStorage) PutStarByAuthorId(id int64) error { //!!!
 		return err
 	}
 
-	author.AuthorStars += 1
+	if method == "put" {
+		author.AuthorStars += 1
+	}
+	if method == "delete" {
+		author.AuthorStars -= 1
+	}
 
 	putstar, err := m.DB.Exec(stmt, author.AuthorStars, id)
 	if err != nil {

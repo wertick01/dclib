@@ -72,7 +72,7 @@ func (server *AppServer) Serve() {
 	)
 	routes.Use(middleware.RequestLog)
 
-	server.srv = &http.Server{ //в отличие от примеров http, здесь мы передаем наш server в поле структуры, для работы в Shutdown
+	server.srv = &http.Server{
 		//Addr: ":8000",
 		Addr:     ":" + server.config.Port,
 		Handler:  routes,
@@ -91,12 +91,12 @@ func (server *AppServer) Shutdown() {
 	log.Printf("server stopped")
 
 	ctxShutDown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	server.db.Close() //закрываем соединение с БД
+	server.db.Close()
 	defer func() {
 		cancel()
 	}()
 	var err error
-	if err = server.srv.Shutdown(ctxShutDown); err != nil { //выключаем сервер, с ограниченным по времени контекстом
+	if err = server.srv.Shutdown(ctxShutDown); err != nil {
 		log.Fatalf("server Shutdown Failed:%s", err)
 	}
 

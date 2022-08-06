@@ -151,21 +151,19 @@ func (m *BooksStorage) ChangeBook(old *models.Books) (*models.Books, error) { //
 	if err != nil {
 		return m.NullBooks(), err
 	}
-	id_1, err := change.LastInsertId()
+	_, err = change.LastInsertId()
 	if err != nil {
 		return m.NullBooks(), err
 	}
-	fmt.Printf("Book %v has been changed.", id_1)
 
 	deleted, err := m.DB.Exec(sdmd, old.BookId)
 	if err != nil {
 		return m.NullBooks(), err
 	}
-	id_2, err := deleted.LastInsertId()
+	_, err = deleted.LastInsertId()
 	if err != nil {
 		return m.NullBooks(), err
 	}
-	fmt.Println(id_2)
 
 	connected, err := m.BooksAuthorsConnection(old.BookId, old)
 	if err != nil {
@@ -267,7 +265,7 @@ func (m *BooksStorage) DeleteAuthorById(id int64) (int64, error) {
 	return res, nil
 }
 
-func (m *BooksStorage) PutStarByBookId(id int64) error { //!!!
+func (m *BooksStorage) PutStarByBookId(id int64, method string) error { //!!!
 
 	stmt := `UPDATE dclib_test.books SET book_stars = ? WHERE book_id = ?`
 
@@ -276,14 +274,19 @@ func (m *BooksStorage) PutStarByBookId(id int64) error { //!!!
 		return err
 	}
 
-	book.Stars += 1
+	if method == "put" {
+		book.Stars += 1
+	}
+	if method == "delete" {
+		book.Stars -= 1
+	}
 
-	putstar, err := m.DB.Exec(stmt, book.Stars, id)
+	star, err := m.DB.Exec(stmt, book.Stars, id)
 	if err != nil {
 		return err
 	}
 
-	id, err = putstar.LastInsertId()
+	id, err = star.LastInsertId()
 	if err != nil {
 		return err
 	}

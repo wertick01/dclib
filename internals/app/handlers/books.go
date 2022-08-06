@@ -134,6 +134,7 @@ func (handler *BooksHandler) Change(w http.ResponseWriter, r *http.Request) {
 	WrapOK(w, m)
 }
 
+/*
 func (handler *BooksHandler) Star(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
@@ -167,6 +168,7 @@ func (handler *BooksHandler) Star(w http.ResponseWriter, r *http.Request) {
 
 	WrapOK(w, m)
 }
+*/
 
 func (handler *BooksHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w, r, err := middl.CheckToken(w, r)

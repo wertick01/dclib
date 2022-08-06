@@ -81,7 +81,7 @@ func (handler *AuthorsHandler) Find(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vars := mux.Vars(r) //переменные, обьявленные в ресурсах попадают в Vars и могут быть адресованы
+	vars := mux.Vars(r)
 	if vars["id"] == "" {
 		WrapError(w, errors.New("missing id"))
 		return
@@ -114,9 +114,8 @@ func (handler *AuthorsHandler) FindBooks(w http.ResponseWriter, r *http.Request)
 		WrapError(w, err)
 		return
 	}
-	//go middl.TimeChecker(w, r)
 
-	vars := mux.Vars(r) //переменные, обьявленные в ресурсах попадают в Vars и могут быть адресованы
+	vars := mux.Vars(r)
 	if vars["id"] == "" {
 		WrapError(w, errors.New("missing id"))
 		return
@@ -173,6 +172,7 @@ func (handler *AuthorsHandler) Change(w http.ResponseWriter, r *http.Request) {
 	WrapOK(w, m)
 }
 
+/*
 func (handler *AuthorsHandler) Star(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
@@ -206,6 +206,7 @@ func (handler *AuthorsHandler) Star(w http.ResponseWriter, r *http.Request) {
 
 	WrapOK(w, m)
 }
+*/
 
 func (handler *AuthorsHandler) Delete(w http.ResponseWriter, r *http.Request) {
 

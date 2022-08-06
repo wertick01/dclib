@@ -54,6 +54,7 @@ func (processor *BooksProcessor) DeleteBook(id int64) (int64, error) {
 	return deleted, nil
 }
 
+/*
 func (processor *BooksProcessor) StarTheBook(id int64) (*models.Books, error) {
 	err := processor.storage.PutStarByBookId(id)
 	if err != nil {
@@ -65,3 +66,4 @@ func (processor *BooksProcessor) StarTheBook(id int64) (*models.Books, error) {
 	}
 	return book, nil
 }
+*/

@@ -77,7 +77,6 @@ func (handler *FavorietesHandler) AddFavorieteAuthor(w http.ResponseWriter, r *h
 }
 
 func (handler *FavorietesHandler) ListBooks(w http.ResponseWriter, r *http.Request) {
-	//vars := r.URL.Query() ЗАЧЕМ ОНО ТУТ НАДО
 	var favorietes *models.FavorieteBooks
 
 	w, r, err := middl.CheckToken(w, r)

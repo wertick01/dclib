@@ -52,6 +52,7 @@ func (processor *AuthorsProcessor) FindAuthor(id int64) (*models.Authors, error)
 
 }
 
+/*
 func (processor *AuthorsProcessor) StarTheAuthor(id int64) (*models.Authors, error) {
 	err := processor.storage.PutStarByAuthorId(id)
 	if err != nil {
@@ -64,6 +65,7 @@ func (processor *AuthorsProcessor) StarTheAuthor(id int64) (*models.Authors, err
 	}
 	return author, nil
 }
+*/
 
 func (processor *AuthorsProcessor) DeleteAuthor(id int64) (int64, error) {
 	deleted, err := processor.storage.DeleteAuthorById(id)
