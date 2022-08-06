@@ -1,6 +1,11 @@
 # Digital Clouds Library
 ![DCLIB](https://github.com/wertick01/dclib/blob/main/dclibrary_image.png?raw=true)
 
+## Description
+
+- For what?
+This api is a small online library within **Digital clouds** and is designed to share books between employees, drop them off and keep a record of them.
+
 ## REQUESTS
 
 | NUMBER | METHOD | PATH | RETURN |
@@ -46,11 +51,6 @@
 | 6.2 | POST | /api/reserved/reserve | Reserve book |
 | 6.3 | PUT | /api/reserved/return | Return reserved book |
 | 6.4 | PUT | /api/reserved/confirm | Confirm the return of the book |
-
-## Description
-
-- For what?
-This api is a small online library within **Digital clouds** and is designed to share books between employees, drop them off and keep a record of them.
 
 ## Installation and build guide
 
