@@ -40,7 +40,6 @@ func (server *AppServer) Serve() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	//defer server.db.Close()
 
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -70,11 +69,11 @@ func (server *AppServer) Serve() {
 		authoriser,
 		favorietesHandler,
 		reserveHandler,
-	) //хендлеры напрямую используются в путях
-	routes.Use(middleware.RequestLog) //middleware используем здесь, хотя можно было бы и в CreateRoutes
+	)
+	routes.Use(middleware.RequestLog)
 
 	server.srv = &http.Server{ //в отличие от примеров http, здесь мы передаем наш server в поле структуры, для работы в Shutdown
-		//Addr: ":8080",
+		//Addr: ":8000",
 		Addr:     ":" + server.config.Port,
 		Handler:  routes,
 		ErrorLog: errorLog,

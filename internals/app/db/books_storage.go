@@ -58,7 +58,7 @@ func (m *BooksStorage) BooksAuthorsConnection(id int64, books *models.Books) (*m
 
 func (m *BooksStorage) GetBooksList() ([]*models.Books, error) {
 
-	stmt := `SELECT ba.book_id, b.book_name, b.book_count, b.book_photo, ba.author_id, a.author_name, a.author_surname, a.author_patrynomic, a.author_photo FROM books_authors AS ba LEFT JOIN authors AS a ON ba.author_id=a.author_id RIGHT JOIN books AS b ON ba.book_id=b.book_id`
+	stmt := `SELECT ba.book_id, b.book_name, b.book_count, b.book_photo, b.book_stars, ba.author_id, a.author_name, a.author_surname, a.author_patrynomic, a.author_photo, a.author_stars FROM books_authors AS ba LEFT JOIN authors AS a ON ba.author_id=a.author_id RIGHT JOIN books AS b ON ba.book_id=b.book_id`
 
 	rows, err := m.DB.Query(stmt)
 	fmt.Println(err)
@@ -73,8 +73,7 @@ func (m *BooksStorage) GetBooksList() ([]*models.Books, error) {
 	for rows.Next() {
 		s := &models.Books{}
 		a := &models.Authors{}
-		err = rows.Scan(&s.BookId, &s.BookName, &s.Count, &s.BookPhoto, &a.AuthorId, &a.AuthorName.Name, &a.AuthorName.Surname, &a.AuthorName.Patronymic, &a.AuthorPhoto)
-		fmt.Println(err)
+		err = rows.Scan(&s.BookId, &s.BookName, &s.Count, &s.BookPhoto, &s.Stars, &a.AuthorId, &a.AuthorName.Name, &a.AuthorName.Surname, &a.AuthorName.Patronymic, &a.AuthorPhoto, &a.AuthorStars)
 		if err != nil {
 			return nil, models.ErrNoRecord
 		}
@@ -107,7 +106,7 @@ func (m *BooksStorage) GetBooksList() ([]*models.Books, error) {
 
 func (m *BooksStorage) GetBookById(id int64) (*models.Books, error) {
 
-	stmt := `SELECT ba.book_id, b.book_name, b.book_count, b.book_photo, ba.author_id, a.author_name, a.author_surname, a.author_patrynomic, a.author_photo FROM books_authors AS ba LEFT JOIN authors AS a ON ba.author_id=a.author_id RIGHT JOIN books AS b ON ba.book_id=b.book_id WHERE ba.book_id=?`
+	stmt := `SELECT ba.book_id, b.book_name, b.book_count, b.book_photo, b.book_stars, ba.author_id, a.author_name, a.author_surname, a.author_patrynomic, a.author_photo FROM books_authors AS ba LEFT JOIN authors AS a ON ba.author_id=a.author_id RIGHT JOIN books AS b ON ba.book_id=b.book_id WHERE ba.book_id=?`
 
 	rows, err := m.DB.Query(stmt, id)
 	if err != nil {
@@ -123,7 +122,7 @@ func (m *BooksStorage) GetBookById(id int64) (*models.Books, error) {
 	for rows.Next() {
 		s := &models.Books{}
 		a := &models.Authors{}
-		err = rows.Scan(&s.BookId, &s.BookName, &s.Count, &s.BookPhoto, &a.AuthorId, &a.AuthorName.Name, &a.AuthorName.Surname, &a.AuthorName.Patronymic, &a.AuthorPhoto)
+		err = rows.Scan(&s.BookId, &s.BookName, &s.Count, &s.BookPhoto, &s.Stars, &a.AuthorId, &a.AuthorName.Name, &a.AuthorName.Surname, &a.AuthorName.Patronymic, &a.AuthorPhoto)
 		if err != nil {
 			return nil, err
 		}

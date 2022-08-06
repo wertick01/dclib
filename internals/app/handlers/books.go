@@ -79,7 +79,7 @@ func (handler *BooksHandler) Find(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vars := mux.Vars(r) //переменные, обьявленные в ресурсах попадают в Vars и могут быть адресованы
+	vars := mux.Vars(r)
 	if vars["id"] == "" {
 		WrapError(w, errors.New("missing id"))
 		return
@@ -134,6 +134,40 @@ func (handler *BooksHandler) Change(w http.ResponseWriter, r *http.Request) {
 	WrapOK(w, m)
 }
 
+func (handler *BooksHandler) Star(w http.ResponseWriter, r *http.Request) {
+
+	w, r, err := middl.CheckToken(w, r)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	vars := mux.Vars(r)
+	if vars["id"] == "" {
+		WrapError(w, errors.New("missing id"))
+		return
+	}
+
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	book, err := handler.processor.StarTheBook(id)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	var m = map[string]interface{}{
+		"result": "OK",
+		"author": book,
+	}
+
+	WrapOK(w, m)
+}
+
 func (handler *BooksHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
@@ -141,7 +175,7 @@ func (handler *BooksHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	vars := mux.Vars(r) //переменные, обьявленные в ресурсах попадают в Vars и могут быть адресованы
+	vars := mux.Vars(r)
 	if vars["id"] == "" {
 		WrapError(w, errors.New("missing id"))
 		return

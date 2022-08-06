@@ -173,6 +173,40 @@ func (handler *AuthorsHandler) Change(w http.ResponseWriter, r *http.Request) {
 	WrapOK(w, m)
 }
 
+func (handler *AuthorsHandler) Star(w http.ResponseWriter, r *http.Request) {
+
+	w, r, err := middl.CheckToken(w, r)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	vars := mux.Vars(r)
+	if vars["id"] == "" {
+		WrapError(w, errors.New("missing id"))
+		return
+	}
+
+	id, err := strconv.ParseInt(vars["id"], 10, 64)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	author, err := handler.processor.StarTheAuthor(id)
+	if err != nil {
+		WrapError(w, err)
+		return
+	}
+
+	var m = map[string]interface{}{
+		"result": "OK",
+		"author": author,
+	}
+
+	WrapOK(w, m)
+}
+
 func (handler *AuthorsHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)

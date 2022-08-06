@@ -55,10 +55,13 @@ func (processor *AuthorsProcessor) FindAuthor(id int64) (*models.Authors, error)
 func (processor *AuthorsProcessor) StarTheAuthor(id int64) (*models.Authors, error) {
 	err := processor.storage.PutStarByAuthorId(id)
 	if err != nil {
-		return processor.storage.NullAuthors(), errors.New("CANNOT DELETE BOOK")
+		return processor.storage.NullAuthors(), err
 	}
 
-	author, _ := processor.FindAuthor(id)
+	author, err := processor.FindAuthor(id)
+	if err != nil {
+		return processor.storage.NullAuthors(), err
+	}
 	return author, nil
 }
 

@@ -5,6 +5,7 @@ CREATE TABLE authors (
     author_surname VARCHAR(100) NOT NULL, 
     author_patrynomic VARCHAR(100), 
     author_photo VARCHAR(100) NOT NULL, 
+    author_stars INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY(author_id)
 );
 
@@ -12,7 +13,8 @@ CREATE TABLE books (
     book_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     book_name VARCHAR(100) NOT NULL, 
     book_count INTEGER, 
-    book_photo VARCHAR(100) NOT NULL);
+    book_photo VARCHAR(100) NOT NULL,
+    book_stars INTEGER NOT NULL DEFAULT 0);
 
 CREATE TABLE books_authors (
     book_id INTEGER NOT NULL,

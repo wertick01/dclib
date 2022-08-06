@@ -2,9 +2,6 @@ include .env
 
 .PHONY: up restart migrate g-logs db-shell db-dump migrate
 
-NETWORK = dclib_default
-DIR = /home/mrred/'Рабочий стол'/Работа/dclib
-
 COMMAND = version
 
 up:

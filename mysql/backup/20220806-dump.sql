@@ -31,6 +31,7 @@ CREATE TABLE `authors` (
   `author_surname` varchar(100) NOT NULL,
   `author_patrynomic` varchar(100) DEFAULT NULL,
   `author_photo` varchar(100) NOT NULL,
+  `author_stars` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`author_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -43,7 +44,7 @@ CREATE TABLE `authors` (
 -- Retrieving rows...
 LOCK TABLES `authors` WRITE;
 /*!40000 ALTER TABLE `authors` DISABLE KEYS */;
-INSERT INTO `authors` VALUES (1,'Lev','Tolstoy','Nickolaevich',''),(2,'Steven','King','Edwid',''),(3,'Adolph','Hitler','Alaizovich',''),(4,'Mikhail','Lermontov','Jurievich',''),(5,'Nikolay','Hohol','Vasilevich',''),(6,'Fedor','Dostoevsky','Mikhailovich',''),(7,'Ray','Bradbury','Douglas',''),(8,'Vladimir','Lenin','Ilich','');
+INSERT INTO `authors` VALUES (1,'Lev','Tolstoy','Nickolaevich','',0),(2,'Steven','King','Edwid','',0),(3,'Adolph','Hitler','Alaizovich','',0),(4,'Mikhail','Lermontov','Jurievich','',0),(5,'Nikolay','Hohol','Vasilevich','',0),(6,'Fedor','Dostoevsky','Mikhailovich','',0),(7,'Ray','Bradbury','Douglas','',0),(8,'Vladimir','Lenin','Ilich','',0);
 /*!40000 ALTER TABLE `authors` ENABLE KEYS */;
 UNLOCK TABLES;
 -- Retrieving table structure for table booking...
@@ -94,6 +95,7 @@ CREATE TABLE `books` (
   `book_name` varchar(100) NOT NULL,
   `book_count` int DEFAULT NULL,
   `book_photo` varchar(100) NOT NULL,
+  `book_stars` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`book_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -106,7 +108,7 @@ CREATE TABLE `books` (
 -- Retrieving rows...
 LOCK TABLES `books` WRITE;
 /*!40000 ALTER TABLE `books` DISABLE KEYS */;
-INSERT INTO `books` VALUES (1,'War and peace',1,''),(2,'It',2,''),(3,'Something',1,''),(4,'Mein Kamph',1488,''),(5,'Hero of our time',1,''),(6,'Taras Bulba',2,''),(7,'Died souls',3,''),(8,'Crime and punishment',1,''),(9,'Dandelion wine',2,''),(10,'The State and the Revolution',5,'');
+INSERT INTO `books` VALUES (1,'War and peace',1,'',0),(2,'It',2,'',0),(3,'Something',1,'',0),(4,'Mein Kamph',1488,'',0),(5,'Hero of our time',1,'',0),(6,'Taras Bulba',2,'',0),(7,'Died souls',3,'',0),(8,'Crime and punishment',1,'',0),(9,'Dandelion wine',2,'',0),(10,'The State and the Revolution',5,'',0);
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
 -- Retrieving table structure for table books_authors...
@@ -296,4 +298,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-08-05 14:07:08
+-- Dump completed on 2022-08-06  7:37:28

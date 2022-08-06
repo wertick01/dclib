@@ -12,7 +12,7 @@ COPY . ./
 RUN CGO_ENABLED=0 go build -o /server
 
 # Expose port and run
-EXPOSE 8080
+EXPOSE 8000
 
 ENTRYPOINT [ "/server" ]
 
@@ -26,7 +26,7 @@ WORKDIR /
 
 COPY --from=build /server /server
 
-EXPOSE 8080
+EXPOSE 8000
 
 USER nonroot:nonroot
 

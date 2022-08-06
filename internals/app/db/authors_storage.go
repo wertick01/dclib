@@ -3,9 +3,7 @@ package db
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 
-	de "github.com/wertick01/dclib/internals/app/dclib_errors"
 	"github.com/wertick01/dclib/internals/app/models"
 )
 
@@ -27,15 +25,13 @@ func (m *AuthorsStorage) CreateNewAuthor(author *models.Authors) (*models.Author
 	result, err := m.DB.Exec(stmt, author.AuthorName.Name, author.AuthorName.Surname, author.AuthorName.Patronymic, author.AuthorPhoto)
 	if err != nil {
 
-		fmt.Printf("%v\n", err)
-		return nil, de.Author_error_create
+		return nil, err
 	}
 
 	_, err = result.LastInsertId()
 	if err != nil {
 
-		fmt.Printf("%v\n", err)
-		return nil, de.Author_error_create
+		return nil, err
 	}
 
 	return author, nil
@@ -43,12 +39,12 @@ func (m *AuthorsStorage) CreateNewAuthor(author *models.Authors) (*models.Author
 
 func (m *AuthorsStorage) GetAuthorsList() ([]*models.Authors, error) {
 
-	stmt := `SELECT author_id, author_name, author_surname, author_patrynomic FROM dclib_test.authors`
+	stmt := `SELECT author_id, author_name, author_surname, author_patrynomic, author_photo, author_stars FROM dclib_test.authors`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-		return nil, de.Author_error_list
+		return nil, err
+
 	}
 
 	defer rows.Close()
@@ -57,20 +53,18 @@ func (m *AuthorsStorage) GetAuthorsList() ([]*models.Authors, error) {
 
 	for rows.Next() {
 		s := &models.Authors{}
-		err = rows.Scan(&s.AuthorId, &s.AuthorName.Name, &s.AuthorName.Surname, &s.AuthorName.Patronymic)
+		err = rows.Scan(&s.AuthorId, &s.AuthorName.Name, &s.AuthorName.Surname, &s.AuthorName.Patronymic, &s.AuthorPhoto, &s.AuthorStars)
 
 		if err != nil {
 
-			fmt.Printf("%v\n", err)
-			return nil, de.Author_error_list
+			return nil, err
 		}
 		authors = append(authors, s)
 	}
 
 	if err = rows.Err(); err != nil {
 
-		fmt.Printf("%v\n", err)
-		return nil, de.Author_error_list
+		return nil, err
 	}
 
 	return authors, nil
@@ -89,25 +83,23 @@ func (m *AuthorsStorage) NullAuthors() *models.Authors {
 
 func (m *AuthorsStorage) GetAuthorById(id int64) (*models.Authors, error) {
 
-	stmt := `SELECT author_id, author_name, author_surname, author_patrynomic FROM dclib_test.authors WHERE author_id = ?`
+	stmt := `SELECT author_id, author_name, author_surname, author_patrynomic, author_photo, author_stars FROM dclib_test.authors WHERE author_id = ?`
 
 	row := m.DB.QueryRow(stmt, id)
 
 	s := &models.Authors{}
 
-	err := row.Scan(&s.AuthorId, &s.AuthorName.Name, &s.AuthorName.Surname, &s.AuthorName.Patronymic)
+	err := row.Scan(&s.AuthorId, &s.AuthorName.Name, &s.AuthorName.Surname, &s.AuthorName.Patronymic, &s.AuthorPhoto, &s.AuthorStars)
 
 	if err != nil {
 
 		if errors.Is(err, sql.ErrNoRows) {
 
-			fmt.Printf("%v\n", err)
-			return m.NullAuthors(), models.ErrNoRecord
+			return nil, err
 
 		} else {
 
-			fmt.Printf("%v\n", err)
-			return m.NullAuthors(), de.Author_error_getbyid
+			return nil, err
 		}
 	}
 
@@ -121,8 +113,7 @@ func (m *AuthorsStorage) GetBooksByAuthorId(id int64) ([]*models.Books, *models.
 
 	if err != nil {
 
-		fmt.Printf("%v\n", err)
-		return nil, m.NullAuthors(), de.Author_error_getauthbooks
+		return nil, m.NullAuthors(), err
 	}
 	var book_id int64
 	var books []*models.Books
@@ -132,15 +123,13 @@ func (m *AuthorsStorage) GetBooksByAuthorId(id int64) ([]*models.Books, *models.
 		err = rows.Scan(&book_id)
 		if err != nil {
 
-			fmt.Printf("%v\n", err)
-			return nil, m.NullAuthors(), de.Author_error_getauthbooks
+			return nil, m.NullAuthors(), err
 		}
 
 		book, err := m.GetBookById(book_id)
 		if err != nil {
 
-			fmt.Printf("%v\n", err)
-			return nil, m.NullAuthors(), de.Author_error_getauthbooks
+			return nil, m.NullAuthors(), err
 		}
 
 		books = append(books, book)
@@ -148,8 +137,7 @@ func (m *AuthorsStorage) GetBooksByAuthorId(id int64) ([]*models.Books, *models.
 	author, err := m.GetAuthorById(id)
 	if err != nil {
 
-		fmt.Printf("%v\n", err)
-		return nil, m.NullAuthors(), de.Author_error_getauthbooks
+		return nil, m.NullAuthors(), err
 	}
 
 	return books, author, nil
@@ -161,8 +149,7 @@ func (m *AuthorsStorage) PutStarByAuthorId(id int64) error { //!!!
 
 	author, err := m.GetAuthorById(id)
 	if errors.Is(err, sql.ErrNoRows) {
-		fmt.Printf("%v\n", err)
-		return de.Author_error_getbyid
+		return err
 	}
 
 	author.AuthorStars += 1
@@ -189,17 +176,16 @@ func (m *AuthorsStorage) ChangeAuthor(old *models.Authors) (*models.Authors, err
 	if err != nil {
 		return m.NullAuthors(), err
 	}
-	id, err := change.LastInsertId()
+	_, err = change.LastInsertId()
 	if err != nil {
 		return m.NullAuthors(), err
 	}
-	fmt.Printf("Author %v has been changed.", id)
 
 	deleted, err := m.DB.Exec(sdmd, old.AuthorId)
 	if err != nil {
 		return m.NullAuthors(), err
 	}
-	id, err = deleted.LastInsertId()
+	_, err = deleted.LastInsertId()
 	if err != nil {
 		return m.NullAuthors(), err
 	}
@@ -224,11 +210,10 @@ func (m *AuthorsStorage) AuthorsBooksConnection(author *models.Authors) (*models
 		if err != nil {
 			return m.NullAuthors(), err
 		}
-		id, err := row.LastInsertId()
+		_, err = row.LastInsertId()
 		if err != nil {
 			return m.NullAuthors(), err
 		}
-		fmt.Printf("Id %v has beed added to DB.", id)
 	}
 	return author, nil
 }

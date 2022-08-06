@@ -2,7 +2,6 @@ package processors
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/wertick01/dclib/internals/app/db"
 	"github.com/wertick01/dclib/internals/app/models"
@@ -31,7 +30,7 @@ func (processor *BooksProcessor) FindBook(id int64) (*models.Books, error) {
 	book, err := processor.storage.GetBookById(id)
 
 	if err != nil {
-		return processor.storage.NullBooks(), errors.New("book not found")
+		return processor.storage.NullBooks(), err
 	}
 
 	return book, nil
@@ -40,7 +39,6 @@ func (processor *BooksProcessor) FindBook(id int64) (*models.Books, error) {
 
 func (processor *BooksProcessor) ListBooks() ([]*models.Books, error) {
 	list, err := processor.storage.GetBooksList()
-	//fmt.Println("processor: ", list)
 	return list, err
 }
 
@@ -51,18 +49,19 @@ func (processor *BooksProcessor) UpdateBook(book *models.Books) (*models.Books, 
 func (processor *BooksProcessor) DeleteBook(id int64) (int64, error) {
 	deleted, err := processor.storage.DeleteBookById(id)
 	if err != nil {
-		return 0, errors.New("CANNOT DELETE BOOK")
+		return 0, err
 	}
-	fmt.Printf("Book %v has been deleted.", id)
 	return deleted, nil
 }
 
 func (processor *BooksProcessor) StarTheBook(id int64) (*models.Books, error) {
 	err := processor.storage.PutStarByBookId(id)
 	if err != nil {
-		return processor.storage.NullBooks(), errors.New("CANNOT DELETE BOOK")
+		return processor.storage.NullBooks(), err
 	}
-	fmt.Printf("Book %v has been stared.", id)
-	book, _ := processor.FindBook(id)
+	book, err := processor.FindBook(id)
+	if err != nil {
+		return processor.storage.NullBooks(), err
+	}
 	return book, nil
 }
