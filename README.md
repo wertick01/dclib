@@ -47,24 +47,64 @@
 | 6.3 | PUT | /api/reserved/return | Return reserved book |
 | 6.4 | PUT | /api/reserved/confirm | Confirm the return of the book |
 
-
 ## Description
 
 - For what?
 This api is a small online library within **Digital clouds** and is designed to share books between employees, drop them off and keep a record of them.
 
-## Examples of requests
+## Installation and build guide
 
+### 1) Clonning the repo
+```sh
+git clone https://github.com/wertick01/dclib
+```
+### 2) Building the app
+```sh
+cd dclib && make up
+```
+### 3) Migrations
+```sh
+make migrate
+```
+### 4) Open in Browser/Postman/[etc.]
+> **Make requests as shown in the examples below**
+---
+## Examples of requests
 
 ### - &ensp; 1.1 &ensp;|&ensp; /api/login &ensp;|&ensp; Method: POST
 ```sh
 curl -v --cookie ... http://localhost/api/login
 ```
+#### JSON example:
+```json
+{
+    "username": "89999999999",
+    "password": "123456"
+}
+```
+---
 ### - &ensp; 1.2 &ensp;|&ensp; /api/refresh &ensp;|&ensp; Method: GET
 ```sh
 curl -v --cookie ... http://localhost/api/refresh
 ```
+---
 ### - &ensp; 1.3 &ensp;|&ensp; /api/registration &ensp;|&ensp; Method: POST
 ```sh
 curl -v --cookie ... http://localhost/api/registration
+```
+#### JSON example:
+
+```json
+{
+    "name": "Ivan",
+    "surname": "Ivanov",
+    "patrynomic": "Ivanovich",
+    "phone": "89999999999",
+    "mail": "ivanov.ivan@mail.ru",
+    "hash": "123456", #there might be a password that will be hashed
+    "Role": {
+        "role_id": 2,
+        "role": "user"
+    }
+}
 ```
