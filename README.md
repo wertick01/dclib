@@ -7,7 +7,7 @@
 | ------ | ------ | ------ |
 | POST | /api/login | Login (and JWT tocker) |
 | GET | /api/refresh | Refresh the JWT tocken |
-| POST | /api/Registration | User registration |
+| POST | /api/registration | User registration |
 |  |  |  |
 | GET | /api/users | List of users |
 | GET | /api/users/{id:[0-9]+} | Find user |
