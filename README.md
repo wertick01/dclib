@@ -46,3 +46,19 @@
 
 - For what?
 This api is a small online library within **Digital clouds** and is designed to share books between employees, drop them off and keep a record of them.
+
+## Examples of requests
+
+
+### - &ensp; 1.1 &ensp;|&ensp; /api/login &ensp;|&ensp; Method: POST
+```sh
+curl -v --cookie ... http://localhost/api/login
+```
+### - &ensp; 1.2 &ensp;|&ensp; /api/refresh &ensp;|&ensp; Method: GET
+```sh
+curl -v --cookie ... http://localhost/api/refresh
+```
+### - &ensp; 1.3 &ensp;|&ensp; /api/registration &ensp;|&ensp; Method: POST
+```sh
+curl -v --cookie ... http://localhost/api/registration
+```
