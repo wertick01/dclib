@@ -5,7 +5,7 @@
 
 | METHOD | PATH | RETURN |
 | ------ | ------ | ------ |
-| POST | /api/login | Login (and JWT tocker) |
+| POST | /api/login | Login (and JWT tocken) |
 | GET | /api/refresh | Refresh the JWT tocken |
 | POST | /api/registration | User registration |
 |  |  |  |
