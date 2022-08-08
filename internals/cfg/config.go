@@ -34,6 +34,6 @@ func GetConfig() (*Cfg, error) {
 }
 
 func (cfg *Cfg) GetDBString() string {
-	//return "dclib_user:password_@tcp(localhost:3306)/dclib_test?parseTime=True"
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", cfg.DbUser, cfg.DbPass, cfg.DbHost, cfg.DbPort, cfg.DbName)
+	return "dclib_user:password_@tcp(localhost:3306)/dclib_test?parseTime=True"
+	//return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True", cfg.DbUser, cfg.DbPass, cfg.DbHost, cfg.DbPort, cfg.DbName)
 }

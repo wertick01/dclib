@@ -1,13 +1,14 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/wertick01/dclib/internals/pkg/logger"
 )
 
 func RequestLog(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Request: %s Method: %s", r.RequestURI, r.Method)
+		logger.Infof(r, r.RequestURI)
 		next.ServeHTTP(w, r)
 	})
 }

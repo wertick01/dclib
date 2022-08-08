@@ -39,7 +39,7 @@ func (m *AuthorsStorage) CreateNewAuthor(author *models.Authors) (*models.Author
 
 func (m *AuthorsStorage) GetAuthorsList() ([]*models.Authors, error) {
 
-	stmt := `SELECT author_id, author_name, author_surname, author_patrynomic, author_photo, author_stars FROM dclib_test.authors`
+	stmt := `SELECT author_id, author_name, author_surname, author_patrynomic, author_photo, author_stars FROM dclib_test.author`
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {

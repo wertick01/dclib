@@ -24,18 +24,18 @@ func (handler *FavorietesHandler) AddFavorieteBook(w http.ResponseWriter, r *htt
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&favorieteBook)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 	_, err = handler.processor.AddFavorieteBook(favorieteBook)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -52,19 +52,19 @@ func (handler *FavorietesHandler) AddFavorieteAuthor(w http.ResponseWriter, r *h
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&favorieteAuthor)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	_, err = handler.processor.AddFavorieteAuthor(favorieteAuthor)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -81,20 +81,20 @@ func (handler *FavorietesHandler) ListBooks(w http.ResponseWriter, r *http.Reque
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&favorietes)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	list, err := handler.processor.ListFavorieteBooks(favorietes.UserId)
 
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 	}
 
 	var m = map[string]interface{}{
@@ -106,24 +106,23 @@ func (handler *FavorietesHandler) ListBooks(w http.ResponseWriter, r *http.Reque
 }
 
 func (handler *FavorietesHandler) ListAuthors(w http.ResponseWriter, r *http.Request) {
-	//vars := r.URL.Query() ЗАЧЕМ ОНО ТУТ НАДО
 	var favorietes *models.FavorieteAuthors
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&favorietes)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 	list, err := handler.processor.ListFavorieteAuthors(favorietes.UserId)
 
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 	}
 
 	var m = map[string]interface{}{
@@ -140,19 +139,19 @@ func (handler *FavorietesHandler) DeleteBook(w http.ResponseWriter, r *http.Requ
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&favorietes)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	deletedbook, err := handler.processor.DeleteFromFavorieteBooks(favorietes)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -170,19 +169,19 @@ func (handler *FavorietesHandler) DeleteAuthor(w http.ResponseWriter, r *http.Re
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&favorietes)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	deletedauthor, err := handler.processor.DeleteFromFavorieteAuthors(favorietes)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 

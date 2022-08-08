@@ -4,13 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+
+	"github.com/wertick01/dclib/internals/pkg/logger"
 )
 
-func WrapError(w http.ResponseWriter, err error) {
-	WrapErrorWithStatus(w, err, http.StatusBadRequest)
+func WrapError(w http.ResponseWriter, r *http.Request, err error) {
+	WrapErrorWithStatus(w, err, http.StatusBadRequest, r)
 }
 
-func WrapErrorWithStatus(w http.ResponseWriter, err error, httpStatus int) {
+func WrapErrorWithStatus(w http.ResponseWriter, err error, httpStatus int, r *http.Request) {
 	var m = map[string]string{
 		"result": "error",
 		"data":   err.Error(),
@@ -18,14 +21,16 @@ func WrapErrorWithStatus(w http.ResponseWriter, err error, httpStatus int) {
 
 	res, _ := json.Marshal(m)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Header().Set("X-Content-Type-Options", "nosniff") //даем понять что ответ приходит в формате json
-	w.WriteHeader(httpStatus)                           //код ошибки
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Add("Status", strconv.Itoa(httpStatus))
+	logger.Errorer(r.RequestURI, err)
+
 	fmt.Fprintln(w, string(res))
 }
 
 func WrapOK(w http.ResponseWriter, m map[string]interface{}) {
 	res, _ := json.Marshal(m)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
+	w.Header().Add("Status", strconv.Itoa(http.StatusOK))
 	fmt.Fprintln(w, string(res))
 }

@@ -23,14 +23,14 @@ func (handler *ReservesHandler) List(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	list, err := handler.processor.GetList()
 
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 	}
 
 	var m = map[string]interface{}{
@@ -46,19 +46,19 @@ func (handler *ReservesHandler) Reserve(w http.ResponseWriter, r *http.Request) 
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&reserved)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	_, err = handler.processor.ReserveBook(reserved)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -75,19 +75,19 @@ func (handler *ReservesHandler) Return(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&returned)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	book, err := handler.processor.ReturnBook(returned)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -104,19 +104,19 @@ func (handler *ReservesHandler) Confirm(w http.ResponseWriter, r *http.Request) 
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&returned)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	book, err := handler.processor.ConfirmBook(returned)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 

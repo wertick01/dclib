@@ -32,13 +32,13 @@ func (handler *UsersHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	user, err := handler.processor.CreateUser(newUser)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func (handler *UsersHandler) List(w http.ResponseWriter, r *http.Request) {
 	list, err := handler.processor.ListUsers()
 
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 	}
 
 	var m = map[string]interface{}{
@@ -96,19 +96,19 @@ func (handler *UsersHandler) List(w http.ResponseWriter, r *http.Request) {
 func (handler *UsersHandler) Find(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	user, err := handler.processor.FindUser(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -125,13 +125,13 @@ func (handler *UsersHandler) FindByPhone(w http.ResponseWriter, r *http.Request)
 
 	err := json.NewDecoder(r.Body).Decode(&wantedUser)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	user, err := handler.processor.FindByPhone(wantedUser.Phone)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -148,13 +148,13 @@ func (handler *UsersHandler) Change(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&changeUser)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	user, err := handler.processor.UpdateUser(changeUser)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -167,21 +167,21 @@ func (handler *UsersHandler) Change(w http.ResponseWriter, r *http.Request) {
 }
 
 func (handler *UsersHandler) Delete(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r) //переменные, обьявленные в ресурсах попадают в Vars и могут быть адресованы
+	vars := mux.Vars(r)
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	deleteduser, err := handler.processor.DeleteUser(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 

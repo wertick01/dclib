@@ -27,19 +27,19 @@ func (handler *AuthorsHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&newAuthor)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	author, err := handler.processor.CreateAuthor(newAuthor)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -55,14 +55,14 @@ func (handler *AuthorsHandler) List(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	list, err := handler.processor.ListAuthors()
 
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 	}
 
 	var m = map[string]interface{}{
@@ -77,25 +77,25 @@ func (handler *AuthorsHandler) Find(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	vars := mux.Vars(r)
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	author, err := handler.processor.FindAuthor(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -111,25 +111,25 @@ func (handler *AuthorsHandler) FindBooks(w http.ResponseWriter, r *http.Request)
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	vars := mux.Vars(r)
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	books, author, err := handler.processor.AuthorsBooks(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -146,7 +146,7 @@ func (handler *AuthorsHandler) Change(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -154,13 +154,13 @@ func (handler *AuthorsHandler) Change(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&author)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	updatedauthor, err := handler.processor.UpdateAuthor(author)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -212,25 +212,25 @@ func (handler *AuthorsHandler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	vars := mux.Vars(r) //переменные, обьявленные в ресурсах попадают в Vars и могут быть адресованы
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	deletedauthor, err := handler.processor.DeleteAuthor(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 

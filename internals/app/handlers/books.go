@@ -27,19 +27,19 @@ func (handler *BooksHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&newBook)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	_, err = handler.processor.CreateBook(newBook)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -54,14 +54,14 @@ func (handler *BooksHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (handler *BooksHandler) List(w http.ResponseWriter, r *http.Request) {
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	list, err := handler.processor.ListBooks()
 
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 	}
 
 	var m = map[string]interface{}{
@@ -75,25 +75,25 @@ func (handler *BooksHandler) List(w http.ResponseWriter, r *http.Request) {
 func (handler *BooksHandler) Find(w http.ResponseWriter, r *http.Request) {
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	vars := mux.Vars(r)
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	book, err := handler.processor.FindBook(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -108,7 +108,7 @@ func (handler *BooksHandler) Find(w http.ResponseWriter, r *http.Request) {
 func (handler *BooksHandler) Change(w http.ResponseWriter, r *http.Request) {
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -116,13 +116,13 @@ func (handler *BooksHandler) Change(w http.ResponseWriter, r *http.Request) {
 
 	err = json.NewDecoder(r.Body).Decode(&updateBook)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	book, err := handler.processor.UpdateBook(updateBook)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
@@ -173,25 +173,25 @@ func (handler *BooksHandler) Star(w http.ResponseWriter, r *http.Request) {
 func (handler *BooksHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w, r, err := middl.CheckToken(w, r)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	vars := mux.Vars(r)
 	if vars["id"] == "" {
-		WrapError(w, errors.New("missing id"))
+		WrapError(w, r, errors.New("missing id"))
 		return
 	}
 
 	id, err := strconv.ParseInt(vars["id"], 10, 64)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 
 	deletedbook, err := handler.processor.DeleteBook(id)
 	if err != nil {
-		WrapError(w, err)
+		WrapError(w, r, err)
 		return
 	}
 

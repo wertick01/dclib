@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -41,7 +40,7 @@ func (server *AppServer) Serve() {
 		log.Fatalln(err)
 	}
 
-	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	//errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	booksStorage := db3.NewBooksStorage(server.db)
 	usersStorage := db3.NewUsersStorage(server.db)
@@ -73,10 +72,10 @@ func (server *AppServer) Serve() {
 	routes.Use(middleware.RequestLog)
 
 	server.srv = &http.Server{
-		//Addr: ":8000",
-		Addr:     ":" + server.config.Port,
-		Handler:  routes,
-		ErrorLog: errorLog,
+		Addr: ":8000",
+		//Addr:     ":" + server.config.Port,
+		Handler: routes,
+		//ErrorLog: errorLog,
 	}
 
 	log.Println("Server started")
